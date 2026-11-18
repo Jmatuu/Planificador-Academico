@@ -1,4 +1,4 @@
-This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+This is a web-first academic planning application built with Expo SDK 58, React Native, TypeScript, and Expo Router. Prioritize the desktop browser experience while keeping the interface responsive on mobile and other supported platforms. The initial interface uses a light theme and sidebar navigation.
 
 ## Expo has changed — do not trust your training data
 
@@ -21,11 +21,11 @@ npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
 
-Run lint and typecheck before declaring any task done.
+Use strict TypeScript. Run lint and TypeScript checks when applicable, especially after changing application code, before declaring the task done.
 
 ## Navigation & Routing
 
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
+- Use **Expo Router** for all navigation. Routes live in `app/` — route files define screens, and `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `app/`.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
