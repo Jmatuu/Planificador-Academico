@@ -1,5 +1,5 @@
-import { View } from "react-native";
+import DashboardScreen from "@/features/dashboard/screens/DashboardScreen";
 
-export default function Index() {
-  return <View style={{ flex: 1, backgroundColor: "#FFFFFF" }} />;
+export default function IndexRoute() {
+  return <DashboardScreen />;
 }

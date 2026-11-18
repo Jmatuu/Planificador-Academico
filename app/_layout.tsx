@@ -1,5 +1,11 @@
 import { Stack } from "expo-router";
 
+import { AppShell } from "@/components/navigation/AppShell";
+
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <AppShell>
+      <Stack screenOptions={{ headerShown: false }} />
+    </AppShell>
+  );
 }
