@@ -44,7 +44,10 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
               <Pressable
                 accessibilityRole="link"
                 accessibilityState={{ selected: isActive }}
-                style={[styles.link, isActive && styles.activeLink]}
+                style={StyleSheet.flatten([
+                  styles.link,
+                  isActive && styles.activeLink,
+                ])}
               >
                 <Text
                   style={[

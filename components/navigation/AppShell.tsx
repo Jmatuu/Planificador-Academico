@@ -1,5 +1,6 @@
 import { useEffect, useState, type PropsWithChildren } from "react";
 import {
+  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -17,9 +18,19 @@ const DESKTOP_SIDEBAR_WIDTH = 256;
 const MOBILE_DRAWER_MAX_WIDTH = 320;
 
 export function AppShell({ children }: PropsWithChildren) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const isDesktop = width >= DESKTOP_BREAKPOINT;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const drawerWidth = Math.min(width * 0.84, MOBILE_DRAWER_MAX_WIDTH);
+
+  console.info("[AppShell diagnostic] render", {
+    width,
+    height,
+    isDesktop,
+    isDrawerOpen,
+    drawerWidth,
+    drawerHeight: height,
+  });
 
   useEffect(() => {
     if (isDesktop) {
@@ -43,8 +54,12 @@ export function AppShell({ children }: PropsWithChildren) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isDrawerOpen, isDesktop]);
 
-  const closeDrawer = () => setIsDrawerOpen(false);
-  const drawerWidth = Math.min(width * 0.84, MOBILE_DRAWER_MAX_WIDTH);
+  const closeDrawer = () => {
+    console.info("[AppShell diagnostic] drawer close requested", {
+      isDrawerOpen,
+    });
+    setIsDrawerOpen(false);
+  };
 
   return (
     <View style={styles.root}>
@@ -61,19 +76,50 @@ export function AppShell({ children }: PropsWithChildren) {
               accessibilityLabel="Abrir menú de navegación"
               accessibilityRole="button"
               accessibilityState={{ expanded: isDrawerOpen }}
-              onPress={() => setIsDrawerOpen(true)}
+              onPress={() => {
+                console.info("[AppShell diagnostic] menu pressed", {
+                  isDrawerOpenBefore: isDrawerOpen,
+                });
+                setIsDrawerOpen(true);
+                console.info(
+                  "[AppShell diagnostic] open state update requested",
+                );
+              }}
               style={styles.menuButton}
             >
               <Text style={styles.menuButtonText}>Menú</Text>
             </Pressable>
-            <Text style={styles.mobileBrand}>Planificador Académico</Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.mobileBrand}
+            >
+              Planificador Académico
+            </Text>
           </View>
         ) : null}
 
         <View style={styles.content}>{children}</View>
       </View>
 
-      {!isDesktop && isDrawerOpen ? (
+      <Modal
+        animationType="none"
+        onRequestClose={() => {
+          console.info("[AppShell diagnostic] Modal onRequestClose", {
+            isDrawerOpen,
+          });
+          closeDrawer();
+        }}
+        onShow={() => {
+          console.info("[AppShell diagnostic] Modal onShow", {
+            isDrawerOpen,
+            drawerWidth,
+            drawerHeight: height,
+          });
+        }}
+        transparent
+        visible={!isDesktop && isDrawerOpen}
+      >
         <View style={styles.drawerOverlay}>
           <Pressable
             accessibilityLabel="Cerrar menú"
@@ -85,7 +131,7 @@ export function AppShell({ children }: PropsWithChildren) {
             <NavigationSidebar onNavigate={closeDrawer} />
           </View>
         </View>
-      ) : null}
+      </Modal>
     </View>
   );
 }
@@ -112,10 +158,12 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.light.tabIconDefault,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
+    gap: 8,
     minHeight: 56,
     paddingHorizontal: 16,
   },
   menuButton: {
+    flexShrink: 0,
     paddingHorizontal: 8,
     paddingVertical: 10,
   },
@@ -126,9 +174,11 @@ const styles = StyleSheet.create({
   },
   mobileBrand: {
     color: Colors.light.text,
+    flex: 1,
+    flexShrink: 1,
     fontSize: 16,
     fontWeight: "700",
-    marginLeft: 16,
+    minWidth: 0,
   },
   content: {
     flex: 1,

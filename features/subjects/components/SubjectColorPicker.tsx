@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Colors from "@/constants/Colors";
 
 const COLOR_OPTIONS = [
-  "#2563EB",
+  "#000000",
   "#7C3AED",
   "#DB2777",
   "#DC2626",
